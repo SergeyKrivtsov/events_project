@@ -1,0 +1,45 @@
+
+
+.nav-wrapper
+{
+  background-color: #363636;
+}
+
+.L1
+{
+margin-left: 20%;
+}
+
+.B1
+{
+  margin-left: 70%;
+}
+.B2
+{
+  margin-left: 85%;
+}
+
+.B1
+{
+  color: black;
+}
+
+
+
+footer.page-footer_my
+{
+  background-color: #363636;   
+
+}
+
+
+span.error_message{
+   margin-left: 5%;
+   font-size: 1rem;
+   color: darkred;
+}
+
+
+
+
+

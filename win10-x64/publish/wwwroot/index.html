@@ -1,0 +1,421 @@
+﻿<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <meta charset="utf-8" />
+    <base href="/" />
+    <title></title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>-->
+    <link rel="stylesheet" type="text/css" href="lib/sweetalert/dist/sweetalert.css">
+    <link rel="stylesheet" href="lib/materialize/dist/css/materialize.min.css">
+    <script src="lib/materialize/dist/js/materialize.min.js">
+
+    </script>
+
+    <link rel="stylesheet" href="app/css/event.css">
+    <link rel="stylesheet" href="app/css/main.css">
+
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/angular-route/angular-route.min.js"></script>
+
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="app/controllers/main.controller.js"></script>
+    <script src="app/controllers/event.controller.js"></script>
+    <script src="app/app.js"></script>
+    <script src="app/controllers/about.controller.js"></script>
+    <script src="app/controllers/activate.controller.js"></script>
+    <script src="app/config/config.js"></script>
+    <script src="lib/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="app/filter/filter.js"></script>
+
+</head>
+
+<body>
+
+
+    <header ng-controller="mainCtrl">
+        <!--  header  -->
+
+        <nav>
+            <div class="nav-wrapper">
+                <a href="" class="brand-logo">Logo</a>
+                <a href="" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+                <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a class="waves-effect waves-light btn reg green " ng-click="openModalAuthorization($event)" ng-if="auth !==true" href="">Вход</a>
+                    </li>
+                    <li>
+                        <a class="waves-effect waves-light btn reg green" ng-click="openModalRegistration($event)" ng-if="auth !== true" href="">Регистрация</a>
+                    </li>
+                    <li> <a ng-click="openModalUserPage($event)" class="waves-effect waves-light btn reg blue " ng-if="auth">Профиль</a></li>
+
+                    <li> <a class='dropdown-button btn green' ng-click="UserEvents()" data-activates='dropdown2' ng-hide="!auth">Сформировать отчет</a>
+                        <!-- Dropdown Structure -->
+
+                        <ul id='dropdown2' class='dropdown-content'>
+                            <li><a ng-repeat="event in usersInEv" ng-click="Excell(event.event_ID)">{{event.title}}</a></li>
+
+                        </ul>
+                    </li>
+                    <li> <a ng-click="olymp_modal($event)" class="waves-effect waves-light btn reg green ">Олимпиада</a></li>
+                    <li> <a ng-click="Exit()" class="waves-effect waves-light btn reg green " ng-if="auth">Выход</a></li>
+
+                </ul>
+                <ul class="side-nav" id="mobile-demo">
+                    <li>
+                        <a class="waves-effect waves-light btn reg green " ng-click="openModalAuthorization($event)" ng-if="auth !==true" href="">Вход</a>
+                    </li>
+                    <li>
+
+                        <a class="waves-effect waves-light btn reg green" ng-click="openModalRegistration($event)" ng-if="auth !== true" href="">Регистрация</a>
+
+                    </li>
+                    <li> <a ng-click="openModalUserPage($event)" class="waves-effect waves-light btn reg blue " ng-if="auth">Профиль</a></li>
+                    <li> <a class='dropdown-button btn green' ng-click="UserEvents()" data-activates='dropdown1' ng-hide="!auth">Сформировать отчет</a>
+                        <!-- Dropdown Structure -->
+
+                        <ul id='dropdown1' class='dropdown-content'>
+                            <li><a ng-repeat="event in usersInEv" ng-click="Excell(event.event_ID)">{{event.title}}</a></li>
+
+                        </ul>
+                    </li>
+                    <li> <a ng-click="olymp_modal($event)" class="waves-effect waves-light btn-large reg green ">Олимпиада</a></li>
+                    <li> <a ng-click="Exit()" class="waves-effect waves-light btn reg green " ng-if="auth">Выход</a></li>
+
+                </ul>
+                </li>
+
+            </div>
+        </nav>
+
+        <div id="authorization" class="modal">
+            <div class="modal-content">
+                <div class="row">
+                    <form class="col s12">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="ema" type="email" class="validate">
+                                <label for="ema">Email</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="password" type="password" class="validate">
+                                <label for="password">Пароль</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="error_message" id="error_authorization"></span>
+                <div class="progress" ng-if="progress">
+                    <div class="indeterminate"></div>
+                </div>
+                <button ng-click="addEnter()" ng-if="progress!==true" class=" modal-action waves-effect waves-green btn-flat">Вход</button>
+            </div>
+        </div>
+
+        <div id="olymp" class="modal">
+            <div class="modal-content">
+                <ul class="tabs" style="background-color:#fafafa !important;" ng-if="part_config">
+                    <li class="tab col s3"><a id="part1" ng-click="olymp_part('part1')" class="active" href="#test1">Шаг 1</a></li>
+                    <li class="tab col s3"><a id="part2" ng-click="olymp_part('part2')" href="#test2">Шаг 2</a></li>
+                </ul>
+                <div class="row">
+                    <form class="col s12" id="form_files">
+                        <div class="row" ng-show="part1">
+                            <div class="input-field col s12">
+                                <input id="olymp_name" type="text" class="validate" name="Name" ng-model="olymp.name">
+                                <label for="olymp_name" id="olymp_name_label">Имя</label>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="part1">
+                            <div class="input-field col s12">
+                                <input type="text" id="olymp_surname" class="validate" ng-model="olymp.surname">
+                                <label for="olymp_surname" id="olymp_surname_label">Фамилия</label>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="part1">
+                            <div class="input-field col s12">
+                                <input type="text" id="olymp_patronymic" class="validate" ng-model="olymp.patronymic">
+                                <label for="olymp_patronymic" id="olymp_patronymic_label">Отчество</label>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="part1">
+                            <div class="input-field col s12">
+                                <input type="email" id="olymp_email" class="validate" ng-model="olymp.email">
+                                <label for="olymp_email" id="olymp_email_label">Електронная почта</label>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="part1">
+                            <label for="olymp_patronymic" id="olymp_birthDate_label">Дата рождения</label>
+                            <div class="input-field col s12">
+                                <input type="date" id="birthDate" class="datepicker" ng-model="olymp.birthDate">
+                            </div>
+                        </div>
+                        <div ng-show="part2">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <input id="HighSchoolName" type="text" class="validate" ng-model="olymp.HighSchoolName">
+                                    <label for="HighSchoolName" id="olymp_HighSchoolName_label">Вищий навчальный заклад(Назва)</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <input type="text" id="HighSchoolAdress" class="validate" ng-model="olymp.HighSchoolAdress">
+                                    <label for="HighSchoolAdress" id="olymp_HighSchoolAdress_label">Адреса закладу</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s4">
+                                    <input type="text" id="Faculty" class="validate" ng-model="olymp.Faculty">
+                                    <label for="Faculty" id="olymp_Faculty_label">Факультет</label>
+                                </div>
+                                <div class="input-field col s4">
+                                    <input type="text" id="Faculty" class="validate" ng-model="olymp.Scills">
+                                    <label for="Faculty" id="olymp_Scills_label">Специальность</label>
+                                </div>
+                                <div class="input-field col s4">
+                                    <input type="text" id="Faculty" class="validate" ng-model="olymp.Course">
+                                    <label for="Faculty" id="olymp_Course_label">Курс</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s9">
+                                    <select id="spec" ng-model="olymp.Housing">
+                                    <option value="" disabled selected>Потреба у проживанні</option>
+                                    <option value="1">Потребую</option>
+                                    <option value="2">не потребую</option>
+                                </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s6">
+                                    <select id="spec_Type" ng-model="olymp.Type">
+
+                                        <option value="" disabled selected>Напрям</option>
+                                        <option value="1">Инженерные науки</option>
+                                        <option value="2">Гуманитарные науки</option>
+                                    </select>
+                                </div>
+
+                                <div class="input-field col s6" ng-show="eng">
+                                    <select multiple id="spec_Language" ng-model="olymp.Language">
+                                        <option value="" disabled selected>Мова програмування</option>
+                                        <option value="C++">С++</option>
+                                        <option value="C#">С#</option>
+                                        <option value="Visual C++">Visual C++</option>
+                                        <option value="Visual Basic">Visual Basic</option>
+                                        <option value="Delphi">Delphi</option>
+                                        <option value="Pascal">Pascal</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-field col s12">
+                                <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+                                    <li>
+                                        <div class="collapsible-header ">Правила проведення олімпіади</div>
+                                        <div class="collapsible-body">
+                                            <p>{{Rules}}</p>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                                <!--<div class="input-field col s12">-->
+                                <hr style="margin-top:20px;">
+                                <input type="checkbox" id="ozn" />
+                                <label for="ozn">Ознайомлений з правилами проведення олімпіади. За невірно подані данні несу персональну відповідальність.</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <form action="api/olymp/upload" method="POST" enctype="multipart/form-data" ng-show="part3">
+                    <div class="file-field input-field col s12" style="margin-top: 20px;">
+                        <div class="btn">
+                            <span>File</span>
+                            <input type="file" accept="application/pdf" id="academ_plan" name="files1" required>
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Анкета з мокрою печаткою у форматі *.pdf">
+                        </div>
+                    </div>
+                    <div class="file-field input-field col s12" style="margin-top: 20px;">
+                        <div class="btn">
+                            <span>File</span>
+                            <input type="file" accept="application/pdf" id="academ_plan" name="files3" required>
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Витяг з навчального плану студента про те, що у нього читалася дисципліна 'Інформатика'">
+                        </div>
+                    </div>
+                    <div class="row" ng-show="false">
+                        <div class="input-field col s12">
+                            <input type="text" id="Surname_files" class="validate" name="files4" required>
+                            <label for="olymp_surname">Фамилия</label>
+                        </div>
+                    </div>
+                    <input type="submit" class="btn" value="upload" />
+
+                </form>
+            </div>
+            <div class="modal-footer ">
+                <div class="row" ng-show="part2">
+                    <span class="error_message" id="error_olymp"></span>
+                    <button ng-click="reg_olymp()" class="modal-action waves-effect waves-green btn-flat" id="SubmitRegForOlymp" disabled>Forward</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="registration" class="modal">
+            <div class="modal-content">
+                <div class="row">
+                    <form class="col s12">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="surname" type="text" class="validate" \>
+                                <label for="surname">Фамилия</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="name" type="text" class="validate" \>
+                                <label for="name">Имя</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="em" type="email" class="validate" \>
+                                <label for="em">Email</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="pas1" type="password" class="validate" \>
+                                <label for="pas1">Пароль</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="pas2" type="password" class="validate" \>
+                                <label for="pas2">Повторите пароль</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <span class="error_message" id="error_registration"></span>
+                <button ng-click="addRegistration()" ng-if="progress!==true" class=" modal-action waves-effect waves-green btn-flat">Зарегистрироваться</button>
+                <div class="progress" ng-if="progress">
+                    <div class="indeterminate"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="user_page" class="modal">
+            <div class="modal-content">
+                <div class="row">
+                    <form class="col s12">
+                        <div class="input-field col s12" ng-if="usData !==true">
+                            Фамилия: {{UserData.surname}}
+                        </div>
+                        <div class="row" ng-if="usData ==true">
+                            <div class="input-field col s12">
+                                <input value="{{UserData.surname}}" id="newSurname" type="text" class="validate">
+                                <label class="active" for="newSurname">Фамилия</label>
+
+                            </div>
+                        </div>
+                        <div class="input-field col s12" ng-if="usData !==true">
+                            Имя: {{UserData.name}}
+                        </div>
+                        <div class="row" ng-if="usData ==true">
+                            <div class="input-field col s12">
+                                <input value="{{UserData.name}}" id="newName" type="text" class="validate">
+                                <label class="active" for="newName">Имя</label>
+                            </div>
+                        </div>
+
+                        <div class="input-field col s12" ng-if="usData !==true">
+                            Email: {{UserData.email}}
+                        </div>
+                        <div class="row" ng-if="usData ==true">
+                            <div class="input-field col s12">
+                                <input value="{{UserData.email}}" id="newEmail" type="text" class="validate">
+                                <label class="active" for="newEmail">Email</label>
+                            </div>
+                        </div>
+                        <div class="row" ng-if="usData ==true">
+                            <div class="input-field col s12">
+                                <input id="newPass0" type="password" class="validate">
+                                <label for="newPass0">Старый пароль</label>
+                            </div>
+                        </div>
+                        <div class="row" ng-if="usData ==true">
+                            <div class="input-field col s12">
+                                <input id="newPass1" type="password" class="validate">
+                                <label for="newPass1">Пароль</label>
+                            </div>
+                        </div>
+                        <div class="row" ng-if="usData ==true">
+                            <div class="input-field col s12">
+                                <input id="newPass2" type="password" class="validate">
+                                <label for="newPass2">Повторите пароль</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="error_message" id="error_user_page"></span>
+                <button ng-click="closeModalUserPage($event)" class=" modal-action waves-effect waves-green btn-flat">Назад</button>
+                <button ng-click="ChangeUserPage()" class=" modal-action waves-effect waves-green btn-flat" ng-if="usData !==true">Изменить</button>
+                <button ng-click="ChangeUserData()" class=" modal-action waves-effect waves-green btn-flat" ng-if="usData ==true">Ок</button>
+                <div class="progress" ng-if="preloader">
+                    <div class="indeterminate"></div>
+                </div>
+
+            </div>
+        </div>
+
+    </header>
+
+
+
+
+
+    <ng-view>
+
+    </ng-view>
+
+    <footer ng-controller="mainCtrl" class="page-footer_my">
+        <!-- footer -->
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h5 class="white-text">Footer Events</h5>
+                    <p class="grey-text text-lighten-4">Для большей информации необходимо зарегистрироваться.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+                <span style="color:white">© 2016 KHAI</span>
+                <!--<a class="grey-text text-lighten-4 right" href="#!">Больше</a>-->
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

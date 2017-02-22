@@ -1,0 +1,353 @@
+<div class="events">
+	<div class="row" style="text-align: center;">
+		<h2>Social Events</h2>
+		<!--слайдер-->
+		<div class="carousel">
+			<a class="carousel-item" href="#one!"><img src="images/1.jpg"></a>
+			<a class="carousel-item" href="#two!"><img src="images/2.jpg"></a>
+			<a class="carousel-item" href="#three!"><img src="images/3.jpg"></a>
+			<a class="carousel-item" href="#four!"><img src="images/4.jpg"></a>
+			<a class="carousel-item" href="#five!"><img src="images/5.jpg"></a>
+			<a class="carousel-item" href="#five!"><img src="images/6.jpg"></a>
+		</div>
+
+
+		<!--категории для фильтров-->
+		<div class="row">
+			<div class="row">
+				<!--дата от которой фильтровать-->
+				<div class="input-field col s4">
+					<input type="date" class="datepicker" ng-model="fromDate " \>
+				</div>
+				<div class="input-field col s4">
+					<!--Дата до которой фильтровать-->
+					<input type="date" class="datepicker" ng-model="toDate " \>
+				</div>
+				<div class="input-field col s4">
+					<!--Тип события по которому фильтровать-->
+					<select id="selTypeEvent" name="ngvalueselect" , id="selectType" ng-click="" ng-model="TypeEvent" multiple>
+                   		<option value="" disabled selected>Тип события</option>
+                    	<option value="Олимпиада">Олимпиада</option>
+                    	<option value="Семинар">Семинар</option>
+                    	<option value="Конференция">Конференция</option>
+                  </select>
+				</div>
+			</div>
+			<!--добавить событие-->
+			<div class="row" style="text-align: left; margin-left: 10px;">
+				<a class="waves-effect waves-light btn reg blue "  ng-if="createEv" ng-click="addEventOpenModal($event)">Добавить событие</a>
+			</div>
+			<!--Прелоадер-->
+			<div class="row" ng-if="preLoader">
+				<div class="col s12">
+					<div class="preloader-wrapper small active">
+						<div class="spinner-layer spinner-green-only">
+							<div class="circle-clipper left">
+								<div class="circle"></div>
+							</div>
+							<div class="gap-patch">
+								<div class="circle"></div>
+							</div>
+							<div class="circle-clipper right">
+								<div class="circle"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--*************-->
+
+		<!--Отображение списка событий-->
+		<ul>
+			<div class="row">
+				<li ng-repeat="event in events | limitTo:itemsPerPage:currentPage | dateFilter:fromDate:toDate | typeFilter:TypeEvent as result"
+					class="col s4" style="text-align: center; width: 25%; margin-left: 5%; margin-right: 2%;">
+					<div class="card">
+
+						<!--Отображение лого на карточке события-->
+						<div class="card-image waves-effect waves-block waves-light">
+							<img class="activator" src="{{event.logo}}">
+						</div>
+						<div class="card-content">
+							<!--Отображение названия на карточке события-->
+							<span class="card-title activator grey-text text-darken-4"><i class="material-icons right">
+									more_vert</i>{{event.title}}</span>
+						</div>
+						<div class="card-reveal">
+							<!--Отображение информации по нажатию на карточку события-->
+							<span class="card-title grey-text text-darken-4">{{event.title }}<i class="material-icons right">close</i></span>
+							<p> Type : {{event.type}}</p>
+							<p> Location : {{event.location}}</p>
+							<p> Date : {{event.date | date}}</p>
+							<a ng-click="openModalAbout(event.about,$event)"class="modal-action waves-effect waves-green btn-flat"> About </a><br/><br/><br/><br/><br/><br/>
+							<a ng-click="openModalEventRegistration(event.event_ID,$event)" class="btn waves-effect waves-light blue">Учавствовать</a>
+						</div>
+					</div>
+					</li>
+			</div>
+		</ul>
+
+		<!--Модальное окно для регистрации на ивент-->
+		<div id="EventRegistration" class="modal">
+			<div class="modal-content">
+
+				<div class="input-field col s6">
+					<label>Телефон формате +380ххххххххх</label>
+					<input id="telephone" type="tel" class="validate" ng-model="modelParticipant.phonenumber">
+				</div>
+				<div class="row">
+					<div class="input-field col s6">
+						<input type="date" class="datepicker" ng-model="modelParticipant.bday" \>
+
+					</div>
+				</div>
+				<div class="input-field col s6">
+					<input id="University" type="text" class="validate" ng-model="modelParticipant.university">
+					<label for="University">Вуз, в котором учитесь или учились</label>
+				</div>
+				<div class="input-field col s6">
+					<input id="University" type="text" class="validate" ng-model="modelParticipant.spec">
+					<label for="University">Специальность</label>
+				</div>
+				<div class="input-field col s12">
+					<input id="University" type="text" class="validate" ng-model="modelParticipant.interes">
+					<label for="University">Семинар на какую тему Вам интересно было бы посетить?</label>
+				</div>
+				<button ng-click="AddParticipant(ID,$event)" class="modal-action waves-effect waves-green btn-flat" id="SubmitParticip" >Учавствовать</button>
+                
+			</div>
+		</div>
+		<!--Модальное окно О-->
+		<div id="about" class="modal">
+			<div class="modal-content">
+				<h4>О событии</h4>
+				<p>{{aboutEvent}}</p>
+			</div>
+		</div>
+		<!--кнопки перключения страниц для событий-->
+
+		<div class="row" align="right">
+			<div class="col s6">
+				<a class="waves-effect waves-light btn reg green" ng-click="pageBack()" ng-disabled="currentPage===0">Prev</a>
+			</div>
+			<div class="col s6" align="left">
+				<a class="waves-effect waves-light btn reg green" ng-click="pageForward()" ng-disabled="result.length<itemsPerPage">Next</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!--добавление события-->
+
+<div id="modalAddEvent" class="modal">
+	<div class="modal-content">
+		<p style="text-align:right; margin: 0; cursor:pointer;" ng-click="canselModalEvent()">X</p>
+		<h4>Добавьте событие</h4>
+		<div class="row">
+			<!--Название события-->
+			<div class="input-field col s6">
+				<input id="event_title" type="text" class="validate" ng-model="modelEvent.title">
+				<label for="event_title">Название</label>
+			</div>
+			<!--Дата события-->
+			<div class="row">
+				<div class="input-field col s6">
+					<input type="date" class="datepicker" ng-model="modelEvent.date" \>
+				</div>
+			</div>
+			<!--выбор типа события-->
+			<div class="row">
+				<div class="input-field col s12">
+					<select id="selAddTypeEvent" name="ngvalueselect" id="selectType" ng-click="" ng-model="modelEvent.type">
+                   		<option value="" disabled selected>Тип события</option>
+                    	<option value="Олимпиада">Олимпиада</option>
+                    	<option value="Семинар">Семинар</option>
+                    	<option value="Конференция">Конференция</option>
+                  </select>
+				</div>
+			</div>
+			<div class="row">
+				<!--место проведения события-->
+				<div class="input-field col s12">
+					<input id="location" type="text" class="validate" ng-model="modelEvent.location">
+					<label for="location">Место проведения</label>
+				</div>
+			</div>
+			<!--выбор лого для события-->
+			<form action="#">
+				<div class="file-field input-field col s12">
+					<div class="btn">
+						<span>File</span>
+						<input type="file">
+					</div>
+					<div class="file-path-wrapper">
+						<input class="file-path validate" ng-model="modelEvent.logo">
+					</div>
+				</div>
+			</form>
+			<!--описание события-->
+			<div class="input-field col s12">
+				<textarea id="about_event" class="materialize-textarea" length="500" class="validate" ng-model="modelEvent.about"></textarea>
+				<label for="about_event">О событии</label>
+			</div>
+		</div>
+		<!--кнопка на добавление события-->
+		<div class="modal-footer">
+			<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" ng-click="addEvent($event)">Добавить</a>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<div class="row">
+				<ul class="list_event" style="text-align: left;">
+					<li ng-repeat="event in events | limitTo:itemsPerPage:currentPage as result">
+						<div class="col s12 m6">
+							<div class="card blue-grey darken-1">
+								<div class="card-content white-text">
+									<span class="card-title">{{::event.title}}</span>
+									<p>{{::event.about}}</p>
+									<p>Location {{::event.location}}</p>
+								</div>
+								<div class="card-action">
+									<a href="#">This is a link</a>
+									<a href="#">This is a link</a>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>-->
+
+
+
+
+
+
+<!--<h2>Now <span class="emphasis">{{getTotalTodos()}}</span> events</h2>
+<div class="todo-wrapper" ng-controller="eventCtrl">
+	<h2>Now <span class="emphasis">{{getTotalEvents()}}</span> events</h2>
+	<div class="carousel">
+		<a class="carousel-item" href="#one!"><img src="images/1.jpg"></a>
+		<a class="carousel-item" href="#two!"><img src="images/2.jpg"></a>
+		<a class="carousel-item" href="#three!"><img src="images/3.jpg"></a>
+		<a class="carousel-item" href="#four!"><img src="images/4.jpg"></a>
+		<a class="carousel-item" href="#five!"><img src="images/5.jpg"></a>
+		<a class="carousel-item" href="#five!"><img src="images/6.jpg"></a>
+	</div>-->
+<!--<div class="row">
+		<div class="input-field col s2">
+			<select name="ngvalueselect" ng-model="typeToSort" multiple>
+                   <option value="" disabled selected>Тип события</option>
+                    <option value="Олимпиада">Олимпиада</option>
+                    <option value="Семинар">Семинар</option>
+                    <option value="Конференция">Конференция</option>
+                  </select>
+		</div>
+
+		<div class="input-field col s3">
+			<input type="date" class="datepicker" ng-model="minDate" \>
+		</div>
+		<div class="input-field col s3">
+			<input type="date" class="datepicker" ng-model="maxDate" \>
+		</div>
+		<ul>
+			<div class="row">
+				<li ng-repeat="even in events | limitTo:GetI() |limitTo:GetJ() | dateFilter:minDate:maxDate " class="col s4" style="  margin-left: 20%;"
+					</div>
+					<ul>
+						<div class=" row ">
+							<div class="card">
+								<div class="card-image waves-effect waves-block waves-light">
+									<img class="activator" src="{{even.bfeiw}}">
+								</div>
+
+								<div class="card-content">
+									<span class="card-title activator grey-text text-darken-4">{{even.text}}<i class="material-icons right">more_vert</i></span>
+								</div>
+								<div class="card-reveal">
+									<span class="card-title grey-text text-darken-4">{{even.text }}<i class="material-icons right">close</i></span>
+									<p> Type : {{even.eventType}}</p>
+									<p> Location : {{even.location}}</p>
+									<p> Date : {{even.day + '-' + even.month+'-'+ even.year}}</p>
+									<p> About : {{even.about}}</p>
+								</div>
+							</div>
+				</li>
+				</div>
+				</ul>
+
+
+				<form>
+					<div class="row">
+						<div class="col s4" style="text-align:center">
+							<a class="btn-floating btn-large waves-effect green" ng-click="Prev()" ng-disabled="DisP()">Prev</a>
+						</div>
+						<div class="col s4" style="text-align:center">
+							<a class="btn-floating btn-large waves-effect waves-light green" ng-click="openModal($event)"><i class="material-icons"> add</i></a>
+						</div>
+						<div class="col s4" style="text-align:center">
+							<a class="btn-floating btn-large waves-effect green" ng-click="Next()" ng-disabled="DisN()">Next</a>
+						</div>
+					</div>
+					<div id="modal1" class="modal">
+						<div class="modal-content">
+
+							<div class="row">
+								<form class="col s12">
+									<div class="row">
+										<div class="input-field col s6">
+											<input id="title_name" type="text" class="validate" ng-model="formName" \>
+											<label for="Task ">Event`s title</label>
+										</div>
+										<div class="input-field col s6">
+											<input type="date" class="datepicker" ng-model="formDate" \>
+										</div>
+									</div>
+									<div class="row">
+										<div class="input-field col s4">
+											<select name="ngvalueselect" ng-model="formType" multiple>
+                   <option value="" disabled selected>Тип события</option>
+                    <option value="Олимпиада">Олимпиада</option>
+                    <option value="Семинар">Семинар</option>
+                    <option value="Конференция">Конференция</option>
+                  </select>
+										</div>
+										<div class="input-field col s8">
+											<input id="eventsLocation" type="text" class="validate" ng-model="eventLoc" \>
+											<label>Location</label>
+										</div>
+									</div>
+									<form action="#">
+										<div class="file-field input-field">
+											<div class="btn">
+												<span>File</span>
+												<input type="file">
+											</div>
+											<div class="file-path-wrapper">
+												<input class="file-path validate" id="formImg">
+											</div>
+										</div>
+									</form>
+									<div class="row">
+										<div class="input-field col s12">
+											<textarea id="textarea1" class="materialize-textarea" length="500"></textarea>
+											<label for="textarea1">About</label>
+								</form>
+								</div>
+								</div>
+								<div class="modal-footer">
+									<button ng-click="addEvent()" class=" modal-action modal-close waves-effect waves-green btn-flat">Add</button>
+								</div>
+							</div>
+          -->

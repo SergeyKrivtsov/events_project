@@ -1,0 +1,11 @@
+.events{
+  width: 100%;
+  padding: 20px 100px;
+}
+
+.list_event li {
+}
+
+select {
+  display: inline-block;
+}
